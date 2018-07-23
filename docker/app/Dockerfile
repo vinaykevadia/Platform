@@ -30,6 +30,11 @@ RUN add-apt-repository ppa:nginx/stable \
         php7.0-gd \
         php7.0-curl \
         curl \
+        php7.0-dev \
+        php-pear \
+        zlib1g-dev \
+        gcc \
+        build-essential \
     && mkdir /run/php \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
     && version=$(php -r "echo PHP_MAJOR_VERSION.PHP_MINOR_VERSION;") \
@@ -51,6 +56,11 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY laravel.ini /etc/php/7.0/fpm/conf.d/laravel.ini
 #COPY disabled-xdebug.ini /etc/php/7.0/mods-available/xdebug.ini
 COPY enabled-xdebug.ini /etc/php/7.0/mods-available/xdebug.ini
+COPY enabled-grpc.ini /etc/php/7.0/mods-available/grpc.ini
+COPY enabled-grpc.ini /etc/php/7.0/fpm/conf.d/grpc.ini
+COPY enabled-grpc.ini /etc/php/7.0/cli/conf.d/grpc.ini
+
+RUN pecl install grpc
 
 RUN /etc/init.d/php7.0-fpm restart
 
